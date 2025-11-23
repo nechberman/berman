@@ -24,16 +24,16 @@ const People = () => {
     loadData();
   }, []);
 
-  const loadData = () => {
-    setPeople(api.getPeople());
-    setGroups(api.getGroups());
+  const loadData = async () => {
+    setPeople(await api.getPeople());
+    setGroups(await api.getGroups());
   };
 
   // --- PERSON LOGIC ---
-  const handleSavePerson = (e: React.FormEvent) => {
+  const handleSavePerson = async (e: React.FormEvent) => {
     e.preventDefault();
     const p = { ...currentPerson, id: currentPerson.id || Date.now().toString() } as Person;
-    api.savePerson(p);
+    await api.savePerson(p);
     setIsPersonModalOpen(false);
     loadData();
   };
@@ -50,7 +50,7 @@ const People = () => {
   };
 
   // --- GROUP LOGIC ---
-  const handleSaveGroup = (e: React.FormEvent) => {
+  const handleSaveGroup = async (e: React.FormEvent) => {
     e.preventDefault();
     const g = { 
       ...currentGroup, 
@@ -58,14 +58,14 @@ const People = () => {
       studentIds: currentGroup.studentIds || []
     } as ResponsibilityGroup;
     
-    api.saveGroup(g);
+    await api.saveGroup(g);
     setIsGroupModalOpen(false);
     loadData();
   };
 
-  const handleDeleteGroup = (id: string) => {
+  const handleDeleteGroup = async (id: string) => {
     if(window.confirm('למחוק את הקבוצה?')) {
-      api.deleteGroup(id);
+      await api.deleteGroup(id);
       loadData();
     }
   }

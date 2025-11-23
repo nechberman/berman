@@ -17,8 +17,8 @@ const Tasks = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const loadTasks = () => {
-    const allTasks = api.getTasks();
+  const loadTasks = async () => {
+    const allTasks = await api.getTasks();
     const now = Date.now();
     
     // Auto cleanup logic: Filter out Done tasks older than 30 mins
@@ -27,6 +27,8 @@ const Tasks = () => {
         const diffMins = (now - t.completedAt) / 1000 / 60;
         if (diffMins > 30) {
             // Task is old, let's remove it from DB (simulated)
+            // api.deleteTask is async but we don't await here to avoid blocking filtering
+            // In a real app backend does this.
             api.deleteTask(t.id);
             return false;
         }
@@ -41,7 +43,7 @@ const Tasks = () => {
      loadTasks(); // Reloading triggers the cleanup filter
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const t = { 
       ...currentTask, 
@@ -55,12 +57,12 @@ const Tasks = () => {
       t.completedAt = Date.now();
     }
     
-    api.saveTask(t);
+    await api.saveTask(t);
     setIsModalOpen(false);
     loadTasks();
   };
 
-  const toggleStatus = (task: Task) => {
+  const toggleStatus = async (task: Task) => {
     const nextStatus = task.status === TaskStatus.OPEN ? TaskStatus.IN_PROGRESS : 
                        task.status === TaskStatus.IN_PROGRESS ? TaskStatus.DONE : TaskStatus.OPEN;
     
@@ -70,7 +72,7 @@ const Tasks = () => {
         completedAt: nextStatus === TaskStatus.DONE ? Date.now() : undefined 
     };
 
-    api.saveTask(updatedTask);
+    await api.saveTask(updatedTask);
     loadTasks();
   };
 

@@ -1,14 +1,10 @@
-
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { AppRegistry } from 'react-native';
 import App from './App';
 
-const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('Failed to find the root element');
+// Register the app
+AppRegistry.registerComponent('App', () => App);
 
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// Run the application
+AppRegistry.runApplication('App', {
+  rootTag: document.getElementById('root'),
+});

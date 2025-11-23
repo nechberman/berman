@@ -11,7 +11,11 @@ const Rooms = () => {
   const [studentsText, setStudentsText] = useState('');
 
   useEffect(() => {
-    setRooms(api.getRooms());
+    const fetchRooms = async () => {
+        const data = await api.getRooms();
+        setRooms(data);
+    };
+    fetchRooms();
   }, []);
 
   const openEdit = (room: Room) => {
@@ -20,14 +24,15 @@ const Rooms = () => {
     setIsModalOpen(true);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const updatedRoom = {
       ...currentRoom,
       students: studentsText.split('\n').map(s => s.trim()).filter(s => s)
     } as Room;
-    api.saveRoom(updatedRoom);
-    setRooms(api.getRooms()); // Refresh
+    await api.saveRoom(updatedRoom);
+    const data = await api.getRooms();
+    setRooms(data); // Refresh
     setIsModalOpen(false);
   };
 

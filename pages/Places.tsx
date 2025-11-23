@@ -14,11 +14,11 @@ const Places = () => {
     loadPlaces();
   }, []);
 
-  const loadPlaces = () => {
-    setPlaces(api.getPlaces());
+  const loadPlaces = async () => {
+    setPlaces(await api.getPlaces());
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const placeToSave = {
       ...currentPlace,
@@ -27,14 +27,14 @@ const Places = () => {
       paymentMethod: currentPlace.paymentMethod || 'other'
     } as Place;
     
-    api.savePlace(placeToSave);
+    await api.savePlace(placeToSave);
     setIsModalOpen(false);
     loadPlaces();
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('האם למחוק מקום זה?')) {
-      api.deletePlace(id);
+      await api.deletePlace(id);
       loadPlaces();
     }
   };

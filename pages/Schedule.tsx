@@ -13,8 +13,8 @@ const Schedule = () => {
     loadEvents();
   }, []);
 
-  const loadEvents = () => {
-    const allEvents = api.getEvents();
+  const loadEvents = async () => {
+    const allEvents = await api.getEvents();
     // Sort by Date then Time
     allEvents.sort((a, b) => {
       if (a.date !== b.date) return a.date.localeCompare(b.date);
@@ -23,21 +23,21 @@ const Schedule = () => {
     setEvents(allEvents);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const eventToSave = {
       ...currentEvent,
       id: currentEvent.id || Date.now().toString()
     } as CampEvent;
     
-    api.saveEvent(eventToSave);
+    await api.saveEvent(eventToSave);
     setIsModalOpen(false);
     loadEvents();
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('האם למחוק אירוע זה?')) {
-      api.deleteEvent(id);
+      await api.deleteEvent(id);
       loadEvents();
     }
   };

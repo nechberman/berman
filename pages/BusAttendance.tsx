@@ -12,14 +12,17 @@ const Attendance = () => {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    const allPeople = api.getPeople();
-    setStudents(allPeople.filter(p => p.type === 'student'));
-    
-    const allSessions = api.getAttendanceSessions();
-    setSessions(allSessions);
-    if (allSessions.length > 0) {
-      setSelectedSessionId(allSessions[0].id);
-    }
+    const fetchData = async () => {
+        const allPeople = await api.getPeople();
+        setStudents(allPeople.filter(p => p.type === 'student'));
+        
+        const allSessions = api.getAttendanceSessions(); // Sync
+        setSessions(allSessions);
+        if (allSessions.length > 0) {
+          setSelectedSessionId(allSessions[0].id);
+        }
+    };
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -28,8 +31,8 @@ const Attendance = () => {
     }
   }, [selectedSessionId]);
 
-  const loadAttendanceForSession = (sessionId: string) => {
-    const allRecords = api.getAllAttendanceRecords();
+  const loadAttendanceForSession = async (sessionId: string) => {
+    const allRecords = await api.getAllAttendanceRecords();
     const sessionRecords = allRecords.filter(r => r.sessionId === sessionId);
     
     const map: Record<string, AttendanceRecord> = {};
@@ -39,7 +42,7 @@ const Attendance = () => {
     setAttendanceMap(map);
   };
 
-  const updateRecord = (studentId: string, updates: Partial<AttendanceRecord>) => {
+  const updateRecord = async (studentId: string, updates: Partial<AttendanceRecord>) => {
     const currentRecord = attendanceMap[studentId] || {
       sessionId: selectedSessionId,
       studentId: studentId,
@@ -54,7 +57,7 @@ const Attendance = () => {
     setAttendanceMap(prev => ({ ...prev, [studentId]: newRecord }));
     
     // Save to DB
-    api.saveAttendanceRecord(newRecord);
+    await api.saveAttendanceRecord(newRecord);
   };
 
   const handleStatus = (studentId: string, status: AttendanceStatus) => {
@@ -65,7 +68,7 @@ const Attendance = () => {
     updateRecord(studentId, { note });
   };
 
-  const markAllPresent = () => {
+  const markAllPresent = async () => {
     if (!window.confirm('האם לסמן את כל התלמידים כנוכחים?')) return;
     
     const newRecords: AttendanceRecord[] = students.map(s => ({
@@ -81,7 +84,7 @@ const Attendance = () => {
     newRecords.forEach(r => newMap[r.studentId] = r);
     setAttendanceMap(newMap);
 
-    api.bulkSaveAttendance(newRecords);
+    await api.bulkSaveAttendance(newRecords);
   };
 
   const getStats = () => {

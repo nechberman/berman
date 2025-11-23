@@ -13,21 +13,21 @@ const Admin = () => {
     loadUsers();
   }, []);
 
-  const loadUsers = () => {
-    setUsers(api.getUsers());
+  const loadUsers = async () => {
+    setUsers(await api.getUsers());
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const newUser = { ...currentUser, id: currentUser.id || Date.now().toString() } as User;
-    api.saveUser(newUser); 
+    await api.saveUser(newUser); 
     setIsModalOpen(false);
     loadUsers();
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('האם למחוק משתמש זה?')) {
-      api.deleteUser(id);
+      await api.deleteUser(id);
       loadUsers();
     }
   };

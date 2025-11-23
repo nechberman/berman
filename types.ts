@@ -1,4 +1,3 @@
-
 export enum UserRole {
   ADMIN = 'admin',
   STAFF = 'staff'
@@ -10,7 +9,7 @@ export interface User {
   email: string;
   phone?: string;
   role: UserRole;
-  password?: string; // In real app, never store plain password on client
+  password?: string;
 }
 
 export interface CampEvent {
@@ -28,7 +27,7 @@ export interface Room {
   id: string;
   roomNumber: number;
   students: string[];
-  staffInCharge: string; // Name or ID
+  staffInCharge: string;
   status: 'ok' | 'issue' | 'check';
   notes: string;
 }
@@ -37,19 +36,19 @@ export interface Person {
   id: string;
   name: string;
   type: 'student' | 'staff';
-  role?: string; // For staff (e.g. Guide, Logistics)
+  role?: string;
   email?: string;
-  phone?: string; // For staff
-  roomNumber?: number; // For students
-  busId?: number; // 1, 2, etc.
-  isOnBus?: boolean; // Legacy field, mostly replaced by AttendanceRecord
+  phone?: string;
+  roomNumber?: number;
+  busId?: number;
+  isOnBus?: boolean;
 }
 
 export interface ResponsibilityGroup {
   id: string;
-  name: string; // "Group 1", "Team A"
-  staffId: string; // ID of the staff member in charge
-  studentIds: string[]; // IDs of students in this group
+  name: string;
+  staffId: string;
+  studentIds: string[];
 }
 
 export interface Place {
@@ -74,22 +73,20 @@ export interface Task {
   id: string;
   title: string;
   description: string;
-  assignedTo: string; // Staff ID or Name
+  assignedTo: string;
   status: TaskStatus;
   dueDate: string;
   category: string;
   createdBy: string;
-  completedAt?: number; // Timestamp when marked done
+  completedAt?: number;
 }
-
-// --- NEW ATTENDANCE TYPES ---
 
 export type AttendanceStatus = 'present' | 'absent' | 'none';
 
 export interface AttendanceSession {
   id: string;
   title: string;
-  day: string; // For grouping
+  day: string;
   order: number;
 }
 
